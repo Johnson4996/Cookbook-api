@@ -1,0 +1,10 @@
+[
+    {
+        "model": "cookbookapi.CbUser",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "bio": "Aspiring exectuive chef. Got my start at mcdonalds and havent looked back since."
+        }
+    }
+]
