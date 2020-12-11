@@ -1,4 +1,5 @@
 import base64
+from cookbookapi.models.Category import Category
 from cookbookapi.models.CbUser import CbUser
 from cookbookapi.models.Recipe import Recipe
 from django.core.files.base import ContentFile
@@ -32,7 +33,7 @@ class Recipes(ViewSet):
         new_recipe.ingredients = request.data['ingredients']
         new_recipe.directions = request.data['directions']
         new_recipe.notes = request.data['notes']
-        new_recipe.category = request.data['category']
+        new_recipe.category = Category.objects.get(pk=request.data['category'])
 
         cbuser = CbUser.objects.get(user = request.auth.user)
         new_recipe.author = cbuser
