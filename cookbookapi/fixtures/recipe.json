@@ -1,0 +1,17 @@
+[
+    {
+        "model": "cookbookapi.Recipe",
+        "pk": 1,
+        "fields": {
+            "title": "Restaurant-Style Buffalo Chicken Wings",
+            "info": "This is similar to the hot wings recipe served at a popular restaurant chain. If you have ever had them, you have to love them.",
+            "picture": "",
+            "ingredients": "½ cup all-purpose flour/n1/4teaspoon paprika/n1/4 teaspoon cayenne pepper/n1/4 teaspoon salt/n10 chicken wings/noil for deep frying/n1/4 cup butter/n14 cup hot sauce/n1 dash ground black pepper/n1 dash garlic powder",
+            "directions":"In a small bowl mix together the flour, paprika, cayenne pepper and salt. Place chicken wings in a large nonporous glass dish or bowl and sprinkle flour mixture over them until they are evenly coated. Cover dish or bowl and refrigerate for 60 to 90 minutes./nHeat oil in a deep fryer to 375 degrees F (190 degrees C). The oil should be just enough to cover wings entirely, an inch or so deep. Combine the butter, hot sauce, pepper and garlic powder in a small saucepan over low heat. Stir together and heat until butter is melted and mixture is well blended. Remove from heat and reserve for serving./nFry coated wings in hot oil for 10 to 15 minutes, or until parts of wings begin to turn brown. Remove from heat, place wings in serving bowl, add hot sauce mixture and stir together. Serve.",
+            "notes":"",
+            "category": 1,
+            "author": 1
+        }
+
+    }
+]
