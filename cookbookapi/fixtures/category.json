@@ -1,0 +1,9 @@
+[
+    {
+        "model": "cookbookapi.Category",
+        "pk": 1,
+        "fields": {
+            "label": "Appetizers"
+        }
+    }
+]

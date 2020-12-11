@@ -1,0 +1,10 @@
+[
+    {
+        "model": "cookbookapi.UserFavorite",
+        "pk": 1,
+        "fields": {
+            "cbuser": 1,
+            "recipe": 1
+        }
+    }
+]
