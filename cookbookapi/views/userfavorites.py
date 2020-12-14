@@ -5,7 +5,6 @@ from cookbookapi.models.Recipe import Recipe
 from cookbookapi.models.UserFavorite import UserFavorite
 from rest_framework.response import Response
 from rest_framework import serializers,status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ViewSet
 from cookbookapi.models.CbUser import CbUser
 
@@ -43,7 +42,7 @@ class UserFavoriteSerializer(serializers.ModelSerializer):
 
 class UserFavorites(ViewSet):
 
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+ 
 
     def create(self, request):
         """Handle POST operatoins when a user favorites a new recipe"""
@@ -74,3 +73,17 @@ class UserFavorites(ViewSet):
 
         serializer = UserFavoriteSerializer(user_favorites,many=True, context={'request': request})
         return Response(serializer.data)
+
+    def destroy(self, request, pk=None):
+        """Handle DELETE requests for a single favorite"""
+
+        try:
+            user_favorite = UserFavorite.objects.get(pk=pk)
+            user_favorite.delete()
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        except UserFavorite.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
