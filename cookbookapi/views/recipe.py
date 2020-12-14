@@ -3,7 +3,6 @@ from cookbookapi.models.Category import Category
 from cookbookapi.models.CbUser import CbUser
 from cookbookapi.models.Recipe import Recipe
 from django.core.files.base import ContentFile
-from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers,status
