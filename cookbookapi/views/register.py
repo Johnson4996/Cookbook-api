@@ -1,5 +1,6 @@
 """Register user"""
 import json
+import datetime
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -23,9 +24,9 @@ def login_user(request):
     if request.method == 'POST':
 
         # Use the built-in authenticate method to verify
-        name = req_body['username']
+        username = req_body['username']
         pass_word = req_body['password']
-        authenticated_user = authenticate(username=name, password=pass_word)
+        authenticated_user = authenticate(username=username, password=pass_word)
 
         # If authentication was successful, respond with their token
         if authenticated_user is not None:
@@ -58,7 +59,9 @@ def register_user(request):
         email=req_body['email'],
         password=req_body['password'],
         first_name=req_body['first_name'],
-        last_name=req_body['last_name']
+        last_name=req_body['last_name'],
+        is_active = req_body['active'],
+        date_joined = datetime.datetime.now()
     )
 
     cbuser = CbUser.objects.create(

@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from cookbookapi.views.userfavorites import UserFavorites
+from cookbookapi.views.cbuser import CbUsers
 from cookbookapi.views.recipe import Recipes
 from django.conf.urls import url
 from django.conf.urls.static import static
@@ -28,6 +28,8 @@ from cookbookapi.views import *
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'recipes', Recipes, 'recipes')
 router.register(r'userfavorites', UserFavorites, 'userfavorites')
+router.register(r'categories', Categories, 'categories')
+router.register(r'user', CbUsers, 'user')
 
 
 urlpatterns = [

@@ -1,4 +1,5 @@
 import base64
+from django.contrib.auth.models import User
 from cookbookapi.models.Category import Category
 from cookbookapi.models.CbUser import CbUser
 from cookbookapi.models.Recipe import Recipe
@@ -10,13 +11,34 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 
+class UserSerializer(serializers.ModelSerializer):
+    """JSON serializer for users"""
+
+    class Meta:
+        model= User
+        fields = ('id', 'username' ) 
+
+class AuthorSerializer(serializers.ModelSerializer):
+    """JSON serializer for Author"""
+
+    user = UserSerializer(many=False)
+
+    class Meta:
+        model = CbUser
+        fields = ('user' ,)
+
 class RecipeSerializer(serializers.ModelSerializer):
     """JSON serializer for Recipes"""
+
+    author = AuthorSerializer(many=False)
+
     class Meta:
         model = Recipe
         fields = ('id', 'title', 'info', 'ingredients','directions',
                 'notes', 'category', 'author', 'picture')
-        depth = 1
+        depth = 2
+
+
 
 
 class Recipes(ViewSet):
@@ -75,9 +97,10 @@ class Recipes(ViewSet):
 
         recipes = Recipe.objects.all()
 
-        #can add params here example: category = self.request.query_params.get('category', None)
-        #then adding if category is not None:
-            #products = products.filter(category__id=category) for each param supported
+        user = self.request.query_params.get('user', None)
+
+        if user is not None:
+            recipes = recipes.filter(author = user)
 
         serializer = RecipeSerializer(recipes, many=True, context={'request': request})
         return Response(serializer.data)
