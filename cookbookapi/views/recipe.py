@@ -8,6 +8,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers,status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django.http.response import HttpResponseServerError
 
 
 
@@ -104,3 +105,14 @@ class Recipes(ViewSet):
 
         serializer = RecipeSerializer(recipes, many=True, context={'request': request})
         return Response(serializer.data)
+
+
+    def retrieve(self, request, pk=None):
+        try:
+            recipe = Recipe.objects.get(pk=pk)
+            serializer = RecipeSerializer(recipe, context={'request': request})
+            return Response(serializer.data)
+
+        except Exception as ex:
+            return HttpResponseServerError(ex)
+
