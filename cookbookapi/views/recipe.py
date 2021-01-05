@@ -98,6 +98,32 @@ class Recipes(ViewSet):
         except Exception as ex:
             return Response({}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    def update(self, request, pk=None):
+        
+        cbuser = CbUser.objects.get(user = request.auth.user)
+
+        recipe = Recipe.objects.get(pk=pk)
+        recipe.title = request.data['title']
+        recipe.info = request.data['info']
+        recipe.ingredients = request.data['ingredients']
+        recipe.directions = request.data['directions']
+        recipe.notes = request.data['notes']
+
+        recipe.category = Category.objects.get(pk=request.data['category'])
+
+        recipe.author = cbuser
+
+        if "picture" in request.data:
+            format, imgstr = request.data["picture"].split(';base64,')
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr), name=f'{recipe.id}-{request.data["title"]}.{ext}')
+
+            recipe.picture = data
+
+        recipe.save()
+
+        return Response({}, status= status.HTTP_204_NO_CONTENT)
+
     
 
     def list(self, request):
