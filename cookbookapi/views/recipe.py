@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import serializers,status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.http.response import HttpResponseServerError
+from rest_framework.filters import SearchFilter
 
 
 
@@ -45,6 +46,11 @@ class RecipeSerializer(serializers.ModelSerializer):
 class Recipes(ViewSet):
 
     permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    serializer_class = RecipeSerializer
+    queryset = Recipe.objects.all()
+    filter_backends = (SearchFilter,)
+    filter_fields = ('title', 'ingredients')
 
     def create(self,request):
 
@@ -102,6 +108,7 @@ class Recipes(ViewSet):
 
         if user is not None:
             recipes = recipes.filter(author = user)
+        
 
         serializer = RecipeSerializer(recipes, many=True, context={'request': request})
         return Response(serializer.data)
@@ -115,4 +122,6 @@ class Recipes(ViewSet):
 
         except Exception as ex:
             return HttpResponseServerError(ex)
+
+    
 
