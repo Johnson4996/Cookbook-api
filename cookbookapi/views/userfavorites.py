@@ -16,7 +16,7 @@ class CbuserSerializer(serializers.ModelSerializer):
     """JSON serializer for user"""
     class Meta:
         model = CbUser
-        fields = ('id','user')
+        fields = ('id',)
         
 
 
@@ -24,7 +24,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     """JSON serializer for recipe"""
     class Meta:
         model = Recipe
-        fields = ('id','title')
+        fields = ('id','title', 'picture')
        
 
 
@@ -87,3 +87,14 @@ class UserFavorites(ViewSet):
 
         except Exception as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    def retrieve(self, request, pk=None):
+        """Handle GET request for a single users favorites"""
+
+        cbuser = CbUser.objects.get(user = request.auth.user)
+        user_favorites = UserFavorite.objects.all()
+        user_favorites = user_favorites.filter(cbuser = cbuser)
+
+        serializer = UserFavoriteSerializer(user_favorites,many=True, context={'request': request})
+        return Response(serializer.data)

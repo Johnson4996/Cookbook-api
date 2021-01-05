@@ -1,4 +1,5 @@
 import base64
+from django.contrib.auth.models import User
 from cookbookapi.models.Category import Category
 from cookbookapi.models.CbUser import CbUser
 from cookbookapi.models.Recipe import Recipe
@@ -7,21 +8,49 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers,status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django.http.response import HttpResponseServerError
+from rest_framework.filters import SearchFilter
 
 
+
+class UserSerializer(serializers.ModelSerializer):
+    """JSON serializer for users"""
+
+    class Meta:
+        model= User
+        fields = ('id', 'username' ) 
+
+class AuthorSerializer(serializers.ModelSerializer):
+    """JSON serializer for Author"""
+
+    user = UserSerializer(many=False)
+
+    class Meta:
+        model = CbUser
+        fields = ('user' ,)
 
 class RecipeSerializer(serializers.ModelSerializer):
     """JSON serializer for Recipes"""
+
+    author = AuthorSerializer(many=False)
+
     class Meta:
         model = Recipe
         fields = ('id', 'title', 'info', 'ingredients','directions',
                 'notes', 'category', 'author', 'picture')
-        depth = 1
+        depth = 2
+
+
 
 
 class Recipes(ViewSet):
 
     permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    serializer_class = RecipeSerializer
+    queryset = Recipe.objects.all()
+    filter_backends = (SearchFilter,)
+    filter_fields = ('title', 'ingredients')
 
     def create(self,request):
 
@@ -75,9 +104,24 @@ class Recipes(ViewSet):
 
         recipes = Recipe.objects.all()
 
-        #can add params here example: category = self.request.query_params.get('category', None)
-        #then adding if category is not None:
-            #products = products.filter(category__id=category) for each param supported
+        user = self.request.query_params.get('user', None)
+
+        if user is not None:
+            recipes = recipes.filter(author = user)
+        
 
         serializer = RecipeSerializer(recipes, many=True, context={'request': request})
         return Response(serializer.data)
+
+
+    def retrieve(self, request, pk=None):
+        try:
+            recipe = Recipe.objects.get(pk=pk)
+            serializer = RecipeSerializer(recipe, context={'request': request})
+            return Response(serializer.data)
+
+        except Exception as ex:
+            return HttpResponseServerError(ex)
+
+    
+
