@@ -52,7 +52,7 @@ class UserFavorites(ViewSet):
         # and set properties, then save
         user_favorite = UserFavorite()
         cbuser = CbUser.objects.get(user = request.auth.user)
-        recipe = Recipe.objects.get(pk = request.data['recipe_id'])
+        recipe = Recipe.objects.get(pk = request.data)
 
         user_favorite.recipe = recipe
         user_favorite.cbuser = cbuser
