@@ -1,5 +1,6 @@
 import base64
 from django.contrib.auth.models import User
+from django.db.models.query_utils import Q
 from cookbookapi.models.Category import Category
 from cookbookapi.models.CbUser import CbUser
 from cookbookapi.models.Recipe import Recipe
@@ -47,10 +48,6 @@ class Recipes(ViewSet):
 
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    serializer_class = RecipeSerializer
-    queryset = Recipe.objects.all()
-    filter_backends = (SearchFilter,)
-    filter_fields = ('title', 'ingredients')
 
     def create(self,request):
 
@@ -131,9 +128,12 @@ class Recipes(ViewSet):
         recipes = Recipe.objects.all()
 
         user = self.request.query_params.get('user', None)
+        search = self.request.query_params.get('search', None)
 
         if user is not None:
             recipes = recipes.filter(author = user)
+        if search is not None:
+            recipes = recipes.filter(Q(title__icontains=search) | Q(ingredients__icontains=search))
         
 
         serializer = RecipeSerializer(recipes, many=True, context={'request': request})
